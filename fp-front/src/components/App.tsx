@@ -1,5 +1,7 @@
 import { Header } from './Header';
 
+import './global.css';
+
 const App = () => {
     return (
         <>
