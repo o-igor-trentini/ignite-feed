@@ -1,29 +1,55 @@
-import { FC } from 'react';
+import { FC, FormEvent, FormEventHandler, useState } from 'react';
 import styles from './index.module.css';
-import { Comment } from '../Comment';
+import { Comment, CommentProps } from '../Comment';
 import { Avatar } from '../Avatar';
 import { format, formatDistanceToNow } from 'date-fns';
-import ptBr from 'date-fns/locale/pt-BR';
+import ptBR from 'date-fns/locale/pt-BR';
+import { Author, ContentType } from '../types';
 
-type ContentType = 'paragraph' | 'link';
+const cmts: CommentProps[] = [
+    {
+        id: 1,
+        author: {
+            avatarUrl: 'https://github.com/o-igor-trentini.png',
+            name: 'Igor Trentini',
+            role: 'Web Developer',
+        },
+        content: ['Wooow 👋', 'Que legal! Dizem que foguete não tem ré! 🚀'],
+        publishedAt: new Date('2022-11-09 12:00:00'),
+    },
+];
 
 export interface PostProps {
     id: number;
-    author: {
-        avatarUrl: string;
-        name: string;
-        role: string;
-    };
+    author: Author;
     content: { type: ContentType; value: string }[];
     publishedAt: Date;
 }
 
-export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
-    const publishedAtFormattedDate = format(publishedAt, 'd "de" LLLL "as" HH:mm"h"', { locale: ptBr });
-    const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBr, addSuffix: true });
+export const Post: FC<PostProps> = ({ id, author, content, publishedAt }) => {
+    const [comments, setComments] = useState<CommentProps[]>(cmts);
+
+    const publishedAtFormattedDate = format(publishedAt, 'd LLLL HH:mm', { locale: ptBR });
+    const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true });
+
+    const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const text: string = event.currentTarget?.comment?.value ?? '';
+
+        if (!text) return;
+
+        setComments((current) => {
+            const last = current[current.length - 1];
+
+            return [...current, { ...last, id: last.id + 1, content: text, publishedAt: new Date() }];
+        });
+
+        event.currentTarget.reset();
+    };
 
     return (
-        <article className={styles.post}>
+        <article key={id} className={styles.post}>
             <header>
                 <div className={styles.author}>
                     <Avatar src={author.avatarUrl} alt="Imagem do perfil do usuário" />
@@ -51,10 +77,10 @@ export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
                 )}
             </div>
 
-            <form className={styles.commentForm}>
+            <form onSubmit={onSubmit} className={styles.commentForm}>
                 <strong>Deixe o seu feedback</strong>
 
-                <textarea placeholder="Deixe um comentário" />
+                <textarea name="comment" placeholder="Deixe um comentário" />
 
                 <footer>
                     <button type="submit">Comentar</button>
@@ -62,9 +88,15 @@ export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
             </form>
 
             <div className={styles.commentList}>
-                <Comment />
-                <Comment />
-                <Comment />
+                {comments.map((item, index) => (
+                    <Comment
+                        key={index}
+                        id={item.id}
+                        author={item.author}
+                        content={item.content}
+                        publishedAt={item.publishedAt}
+                    />
+                ))}
             </div>
         </article>
     );

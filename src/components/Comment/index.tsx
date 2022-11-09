@@ -1,22 +1,34 @@
 import { FC } from 'react';
-
 import styles from './index.module.css';
 import { ThumbsUp, Trash } from 'phosphor-react';
 import { Avatar } from '../Avatar';
+import { Author } from '../types';
+import { format, formatDistanceToNow } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-export const Comment: FC = () => {
+export interface CommentProps {
+    id: number;
+    author: Author;
+    content: string;
+    publishedAt: Date;
+}
+
+export const Comment: FC<CommentProps> = ({ id, author, content, publishedAt }) => {
+    const publishedAtFormattedDate = format(publishedAt, 'd LLLL HH:mm', { locale: ptBR });
+    const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true });
+
     return (
-        <div className={styles.comment}>
-            <Avatar hasBorder={false} src="https://github.com/o-igor-trentini.png" alt="Imagem do perfil do usuário" />
+        <div key={id} className={styles.comment}>
+            <Avatar hasBorder={false} src={author.avatarUrl} alt="Imagem do perfil do usuário" />
 
             <div className={styles.commentBox}>
                 <div className={styles.commentContent}>
                     <header>
                         <div className={styles.authorAndTime}>
-                            <strong>Igor Luís Casanova Trentini</strong>
+                            <strong>{author.name}</strong>
 
-                            <time title="3 de Julho às 12:00h" dateTime="2022-07-03 12:00:00">
-                                Cerca de 1h atrás
+                            <time title={publishedAtFormattedDate} dateTime={publishedAt.toISOString()}>
+                                {publishedAtRelativeToNow}
                             </time>
                         </div>
 
@@ -25,7 +37,7 @@ export const Comment: FC = () => {
                         </button>
                     </header>
 
-                    <p>Muito bom Devon, parabéns 👏👏</p>
+                    <p>{content}</p>
                 </div>
 
                 <footer>

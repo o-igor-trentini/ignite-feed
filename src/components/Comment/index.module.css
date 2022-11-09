@@ -9,6 +9,10 @@
 }
 
 .commentBox footer button {
+    margin-top: 1rem
+}
+
+.commentBox footer button {
     background: transparent;
     border: 0;
     color: var(--gray-400);
