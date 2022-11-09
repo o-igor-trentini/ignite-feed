@@ -8,13 +8,12 @@ import { Author, ContentType } from '../types';
 
 const cmts: CommentProps[] = [
     {
-        id: 1,
         author: {
             avatarUrl: 'https://github.com/o-igor-trentini.png',
             name: 'Igor Trentini',
             role: 'Web Developer',
         },
-        content: ['Wooow 👋', 'Que legal! Dizem que foguete não tem ré! 🚀'],
+        content: 'Wooow 👋 Que legal! Dizem que foguete não tem ré! 🚀',
         publishedAt: new Date('2022-11-09 12:00:00'),
     },
 ];
@@ -26,7 +25,7 @@ export interface PostProps {
     publishedAt: Date;
 }
 
-export const Post: FC<PostProps> = ({ id, author, content, publishedAt }) => {
+export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
     const [comments, setComments] = useState<CommentProps[]>(cmts);
 
     const publishedAtFormattedDate = format(publishedAt, 'd LLLL HH:mm', { locale: ptBR });
@@ -40,16 +39,28 @@ export const Post: FC<PostProps> = ({ id, author, content, publishedAt }) => {
         if (!text) return;
 
         setComments((current) => {
-            const last = current[current.length - 1];
-
-            return [...current, { ...last, id: last.id + 1, content: text, publishedAt: new Date() }];
+            return [
+                ...current,
+                {
+                    content: text,
+                    publishedAt: new Date(),
+                    author: {
+                        avatarUrl: 'https://github.com/o-igor-trentini.png',
+                        name: 'Igor Trentini',
+                        role: 'Web Developer',
+                    },
+                },
+            ];
         });
 
         event.currentTarget.reset();
     };
 
+    const handleDeleteComment = (comment: CommentProps): void =>
+        setComments((current) => current.filter((item) => item.content !== comment.content));
+
     return (
-        <article key={id} className={styles.post}>
+        <article className={styles.post}>
             <header>
                 <div className={styles.author}>
                     <Avatar src={author.avatarUrl} alt="Imagem do perfil do usuário" />
@@ -90,11 +101,11 @@ export const Post: FC<PostProps> = ({ id, author, content, publishedAt }) => {
             <div className={styles.commentList}>
                 {comments.map((item) => (
                     <Comment
-                        key={item.id}
-                        id={item.id}
+                        key={item.content}
                         author={item.author}
                         content={item.content}
                         publishedAt={item.publishedAt}
+                        onDelete={() => handleDeleteComment(item)}
                     />
                 ))}
             </div>

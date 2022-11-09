@@ -7,32 +7,36 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 export interface CommentProps {
-    id: number;
     author: Author;
     content: string;
     publishedAt: Date;
+    onDelete?: () => void;
 }
 
-export const Comment: FC<CommentProps> = ({ id, author, content, publishedAt }) => {
+export const Comment: FC<CommentProps> = ({ author, content, publishedAt, onDelete }) => {
     const publishedAtFormattedDate = format(publishedAt, 'd LLLL HH:mm', { locale: ptBR });
     const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true });
 
+    const handleDelete = (): void => {
+        if (onDelete) onDelete();
+    };
+
     return (
-        <div key={id} className={styles.comment}>
-            <Avatar hasBorder={false} src={author.avatarUrl} alt="Imagem do perfil do usuário" />
+        <div className={styles.comment}>
+            <Avatar hasBorder={false} src={author?.avatarUrl} alt="Imagem do perfil do usuário" />
 
             <div className={styles.commentBox}>
                 <div className={styles.commentContent}>
                     <header>
                         <div className={styles.authorAndTime}>
-                            <strong>{author.name}</strong>
+                            <strong>{author?.name}</strong>
 
                             <time title={publishedAtFormattedDate} dateTime={publishedAt.toISOString()}>
                                 {publishedAtRelativeToNow}
                             </time>
                         </div>
 
-                        <button title="Deletar comentário">
+                        <button title="Deletar comentário" onClick={handleDelete}>
                             <Trash size={24} />
                         </button>
                     </header>
