@@ -51,9 +51,9 @@ const App = () => {
                 <Sidebar />
 
                 <main>
-                    {posts.map((item, index) => (
+                    {posts.map((item) => (
                         <Post
-                            key={index}
+                            key={item.id}
                             id={item.id}
                             author={item.author}
                             content={item.content}

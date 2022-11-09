@@ -66,11 +66,11 @@ export const Post: FC<PostProps> = ({ id, author, content, publishedAt }) => {
             </header>
 
             <div className={styles.content}>
-                {content.map((item, index) =>
+                {content.map((item) =>
                     item.type === 'paragraph' ? (
-                        <p key={index}>{item.value}</p>
+                        <p key={item.value}>{item.value}</p>
                     ) : (
-                        <a key={index} href="#">
+                        <a key={item.value} href="#">
                             {item.value}
                         </a>
                     ),
@@ -88,9 +88,9 @@ export const Post: FC<PostProps> = ({ id, author, content, publishedAt }) => {
             </form>
 
             <div className={styles.commentList}>
-                {comments.map((item, index) => (
+                {comments.map((item) => (
                     <Comment
-                        key={index}
+                        key={item.id}
                         id={item.id}
                         author={item.author}
                         content={item.content}
