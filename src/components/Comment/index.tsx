@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import styles from './index.module.css';
 import { ThumbsUp, Trash } from 'phosphor-react';
 import { Avatar } from '../Avatar';
@@ -14,12 +14,15 @@ export interface CommentProps {
 }
 
 export const Comment: FC<CommentProps> = ({ author, content, publishedAt, onDelete }) => {
+    const [likeCount, setLikeCount] = useState<number>(0);
     const publishedAtFormattedDate = format(publishedAt, 'd LLLL HH:mm', { locale: ptBR });
     const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true });
 
     const handleDelete = (): void => {
         if (onDelete) onDelete();
     };
+
+    const handleLike = (): void => setLikeCount((current) => current + 1);
 
     return (
         <div className={styles.comment}>
@@ -45,8 +48,8 @@ export const Comment: FC<CommentProps> = ({ author, content, publishedAt, onDele
                 </div>
 
                 <footer>
-                    <button>
-                        <ThumbsUp size={20} /> Aplaudir <span>20</span>
+                    <button onClick={handleLike}>
+                        <ThumbsUp size={20} /> Aplaudir <span>{likeCount}</span>
                     </button>
                 </footer>
             </div>
