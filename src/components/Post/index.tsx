@@ -27,7 +27,7 @@ export interface PostProps {
 
 export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
     const [comments, setComments] = useState<CommentProps[]>(cmts);
-
+    const [buttonIsActive, setButtonIsActive] = useState<boolean>(false);
     const publishedAtFormattedDate = format(publishedAt, 'd LLLL HH:mm', { locale: ptBR });
     const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBR, addSuffix: true });
 
@@ -58,6 +58,16 @@ export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
 
     const handleDeleteComment = (comment: CommentProps): void =>
         setComments((current) => [...current].filter((item) => item.content !== comment.content));
+
+    const handleNewCommentValidate = (event: FormEvent<HTMLTextAreaElement>) => {
+        event.currentTarget.setCustomValidity('Este campo é obrigatório!');
+    };
+
+    const handleChange = (event: FormEvent<HTMLTextAreaElement>) => {
+        event.currentTarget.setCustomValidity('');
+
+        event.currentTarget.value ? setButtonIsActive(true) : setButtonIsActive(false);
+    };
 
     return (
         <article className={styles.post}>
@@ -91,10 +101,18 @@ export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
             <form onSubmit={onSubmit} className={styles.commentForm}>
                 <strong>Deixe o seu feedback</strong>
 
-                <textarea name="comment" placeholder="Deixe um comentário" />
+                <textarea
+                    name="comment"
+                    placeholder="Deixe um comentário"
+                    onInvalid={handleNewCommentValidate}
+                    onChange={handleChange}
+                    required
+                />
 
                 <footer>
-                    <button type="submit">Comentar</button>
+                    <button type="submit" disabled={!buttonIsActive}>
+                        Comentar
+                    </button>
                 </footer>
             </form>
 
