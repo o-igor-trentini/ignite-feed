@@ -1,38 +1,54 @@
 import { FC } from 'react';
-
 import styles from './index.module.css';
 import { Comment } from '../Comment';
 import { Avatar } from '../Avatar';
+import { format, formatDistanceToNow } from 'date-fns';
+import ptBr from 'date-fns/locale/pt-BR';
 
-export const Post: FC = () => {
+type ContentType = 'paragraph' | 'link';
+
+export interface PostProps {
+    id: number;
+    author: {
+        avatarUrl: string;
+        name: string;
+        role: string;
+    };
+    content: { type: ContentType; value: string }[];
+    publishedAt: Date;
+}
+
+export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
+    const publishedAtFormattedDate = format(publishedAt, 'd "de" LLLL "as" HH:mm"h"', { locale: ptBr });
+    const publishedAtRelativeToNow = formatDistanceToNow(publishedAt, { locale: ptBr, addSuffix: true });
+
     return (
         <article className={styles.post}>
             <header>
                 <div className={styles.author}>
-                    <Avatar src="https://github.com/o-igor-trentini.png" alt="Imagem do perfil do usuário" />
+                    <Avatar src={author.avatarUrl} alt="Imagem do perfil do usuário" />
 
                     <div className={styles.authorInfo}>
-                        <strong>Igor Luís Casanova Trentini</strong>
-                        <span>Web Developer</span>
+                        <strong>{author.name}</strong>
+                        <span>{author.role}</span>
                     </div>
                 </div>
 
-                <time title="3 de Julho às 12:00h" dateTime="2022-07-03 12:00:00">
-                    Publicado há 1h
+                <time title={publishedAtFormattedDate} dateTime={publishedAt.toISOString()}>
+                    {publishedAtRelativeToNow}
                 </time>
             </header>
+
             <div className={styles.content}>
-                <p>Fala galeraa 👋</p>
-                <p>
-                    Acabei de subir mais um projeto no meu portifa. É um projeto que fiz no NLW Return, evento da
-                    Rocketseat. O nome do projeto é DoctorCare 🚀
-                </p>
-                <p>
-                    👉 <a href="#">jane.design/doctorcare</a>
-                </p>
-                <p>
-                    <a href="#">#novoprojeto</a> <a href="">#nlw</a> <a href="">#rocketseat</a>
-                </p>
+                {content.map((item, index) =>
+                    item.type === 'paragraph' ? (
+                        <p key={index}>{item.value}</p>
+                    ) : (
+                        <a key={index} href="#">
+                            {item.value}
+                        </a>
+                    ),
+                )}
             </div>
 
             <form className={styles.commentForm}>
