@@ -57,7 +57,7 @@ export const Post: FC<PostProps> = ({ author, content, publishedAt }) => {
     };
 
     const handleDeleteComment = (comment: CommentProps): void =>
-        setComments((current) => current.filter((item) => item.content !== comment.content));
+        setComments((current) => [...current].filter((item) => item.content !== comment.content));
 
     return (
         <article className={styles.post}>
