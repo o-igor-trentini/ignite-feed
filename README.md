@@ -20,6 +20,10 @@ Use o [npm] para instalar as dependências:
 npm i
 ```
 
+## Design System
+
+O desenvolvimento da aplicação foi construido a partir da documentação que pode ser encontrada [aqui][].
+
 ---
 
 Powered by: [Rocketseat][] 🚀
@@ -28,3 +32,4 @@ Powered by: [Rocketseat][] 🚀
 [Rocketseat]: https://www.rocketseat.com.br/
 [clicando aqui]: https://o-igor-trentini.github.io/ignite-feed/
 [npm]: https://www.npmjs.com/
+[aqui]: https://www.figma.com/file/2LbFotoYdGr79aBBEASrOk/Ignite-Feed-(Community)
