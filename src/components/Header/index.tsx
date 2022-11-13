@@ -6,7 +6,7 @@ import logo from '../../assets/logo.svg';
 export const Header: FC = () => {
     return (
         <header className={styles.header}>
-            <img src={logo} alt="Logo tipo do Post Feed" />
+            <img src={logo} alt="Logo tipo do Ignite Feed" />
         </header>
     );
 };
