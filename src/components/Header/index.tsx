@@ -1,6 +1,5 @@
 import { FC } from 'react';
 import styles from './index.module.css';
-('');
 import logo from '../../assets/logo.svg';
 
 export const Header: FC = () => {
